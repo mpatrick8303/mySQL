@@ -25,8 +25,9 @@ public class Customers implements CustomerDAO
         }
         catch (SQLException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return;//the catch handles what could go wrong
+            //so in this case normally if the database has an error 
+            //and you have to handle the exception you want to handle and can either throw another exception or handle it how you want
         }
 
     }
@@ -221,8 +222,7 @@ public class Customers implements CustomerDAO
         }
         catch (SQLException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return;
         }
     }
 

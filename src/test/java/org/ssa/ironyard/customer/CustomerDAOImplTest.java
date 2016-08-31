@@ -20,10 +20,7 @@ public class CustomerDAOImplTest
 
     Customer johnDoe;
     Customer janeDoe;
-    static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root";
-    DataSource datasource;
-    Connection connection;
-    PreparedStatement deleteEverything;
+    static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root&" + "useServerPrepStmts=true";
     CustomerDAO customers;
 
     @Before
@@ -73,6 +70,7 @@ public class CustomerDAOImplTest
         dbJohn = customers.update(dbJohn);
         assertTrue(dbJohn.getFirstName().equals("Jane"));
         assertTrue(customers.read(dbJohn.getId()).getFirstName().equals("Jane"));
+        assertTrue(customers.read(dbJohn.getId()).equals(dbJohn));
     }
     
     @Test
@@ -116,6 +114,7 @@ public class CustomerDAOImplTest
         List<Customer> customerList = customers.readLastName("Jones");
         assertFalse(customerList.contains(dbJohn));
         assertTrue(customerList.contains(dbJane));
+
     }
 
     @Test

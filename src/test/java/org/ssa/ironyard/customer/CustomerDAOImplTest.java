@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class CustomerDAOImplTest
     DataSource datasource;
     Connection connection;
     PreparedStatement deleteEverything;
-    Customers customers;
+    CustomerDAO customers;
 
     @Before
     public void setup()
@@ -32,21 +33,8 @@ public class CustomerDAOImplTest
         janeDoe = new Customer("jane", "doe");
         MysqlDataSource mysqlDataSource = new MysqlDataSource();
         mysqlDataSource.setURL(URL);
-        Connection connection;
-        try
-        {
-            connection = mysqlDataSource.getConnection();
-            this.datasource = mysqlDataSource;
-            this.connection = connection;
-            deleteEverything = this.connection.prepareStatement("delete from customers");
-            deleteEverything.executeUpdate();
-            customers = new Customers(datasource);
-        }
-        catch (SQLException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        customers = new Customers(mysqlDataSource);
+        customers.deleteAll();
         
     }
 
@@ -58,14 +46,23 @@ public class CustomerDAOImplTest
         assertTrue(dbJohn.getFirstName().equals(johnDoe.getFirstName()));
         assertTrue(dbJohn.getLastName().equals(johnDoe.getLastName()));
         assertTrue(dbJohn.getId() > 0);
+        
+        assertTrue(dbJohn.equals(customers.read(dbJohn.getId())));
+//        Customer check = new Customer(customers.read(dbJohn.getId()).getFirstName(),customers.read(dbJohn.getId()).getLastName());
+//        check.setId(customers.read(dbJohn.getId()).getId());
+//        
+//        assertTrue(check.equals(dbJohn));
+        
     }
 
     @Test
     public void testDelete()
     {
         Customer dbJohn = customers.insert(johnDoe);
-        customers.delete(dbJohn);
+        assertTrue(customers.delete(dbJohn));
         assertTrue(customers.read(dbJohn.getId()) == null);
+        assertFalse(customers.delete(dbJohn));
+        
     }
 
     @Test
@@ -76,6 +73,17 @@ public class CustomerDAOImplTest
         dbJohn = customers.update(dbJohn);
         assertTrue(dbJohn.getFirstName().equals("Jane"));
         assertTrue(customers.read(dbJohn.getId()).getFirstName().equals("Jane"));
+    }
+    
+    @Test
+    public void testRead()
+    {
+        Customer dbJohn = customers.insert(johnDoe);
+        
+        assertTrue(dbJohn.equals(customers.read(dbJohn.getId())));
+        
+        customers.delete(dbJohn);
+        assertTrue(customers.read(dbJohn.getId()) == null);
     }
 
     @Test
@@ -120,6 +128,12 @@ public class CustomerDAOImplTest
         assertTrue(customers.read(dbJohn.getId()) == null);
         assertTrue(customers.read(dbJane.getId()) == null);
         
+    }
+    
+    @After
+    public void tearDown()
+    {
+        customers.close();
     }
 
 }

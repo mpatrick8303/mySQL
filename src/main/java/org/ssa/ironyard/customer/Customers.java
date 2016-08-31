@@ -63,7 +63,7 @@ public class Customers implements CustomerDAO
         {
             prepareStatement = this.connection.prepareStatement("Delete From customers Where id=?");
             prepareStatement.setInt(1, toDelete.getId());
-            return prepareStatement.execute();
+            return prepareStatement.executeUpdate()>0;
 
         }
         catch (SQLException e)
@@ -198,7 +198,7 @@ public class Customers implements CustomerDAO
 
     }
 
-    protected boolean deleteAll()
+    public boolean deleteAll()
     {
         PreparedStatement prepareStatement;
         try
@@ -213,9 +213,17 @@ public class Customers implements CustomerDAO
 
     }
 
-    protected void close() throws SQLException
+    public void close()
     {
-        this.connection.close();
+        try
+        {
+            this.connection.close();
+        }
+        catch (SQLException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

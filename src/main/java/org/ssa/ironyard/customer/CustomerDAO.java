@@ -1,6 +1,6 @@
 package org.ssa.ironyard.customer;
 
-import java.sql.SQLException;
+import java.util.List;
 
 public interface CustomerDAO
 {
@@ -8,4 +8,9 @@ public interface CustomerDAO
     boolean delete(Customer toDelete);
     Customer update(Customer customer);
     Customer read(int id);
+    List<Customer> readAll();
+    List<Customer> readFirstName(String firstName);
+    List<Customer> readLastName(String lastName);
+    boolean deleteAll();
+    void close();
 }

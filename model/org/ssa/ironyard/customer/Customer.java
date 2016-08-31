@@ -63,7 +63,7 @@ public class Customer
 
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object obj)//a lot of times want to change this to have if the id = id then they are equal to each other
     {
         if (this == obj)
             return true;

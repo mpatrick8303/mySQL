@@ -45,7 +45,6 @@ public class Customers implements CustomerDAO
             ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
             generatedKeys.next();
             c = new Customer(generatedKeys.getInt(1),customer.getFirstName(),customer.getLastName());
-            //c = cORM.map(customer);
             return c;
         }
         catch (SQLException e)

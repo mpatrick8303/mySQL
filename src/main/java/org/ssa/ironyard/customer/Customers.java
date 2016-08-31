@@ -41,8 +41,8 @@ public class Customers implements CustomerDAO
         {
             prepareStatement = this.connection.prepareStatement("Insert Into customers(first,last) Values(?,?)", Statement.RETURN_GENERATED_KEYS);
             prepareStatement.setString(1, customer.getFirstName());
-            prepareStatement.setString(2, customer.getLastName());
-            prepareStatement.execute();
+            prepareStatement.setString(2, customer.getLastName());      
+            prepareStatement.executeUpdate();
             ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
             generatedKeys.next();
             c = read(generatedKeys.getInt(1));
@@ -85,9 +85,11 @@ public class Customers implements CustomerDAO
             prepareStatement.setString(1, customerUpdate.getFirstName());
             prepareStatement.setString(2, customerUpdate.getLastName());
             prepareStatement.setInt(3, customerUpdate.getId());
-            prepareStatement.executeUpdate();
-
-            return read(customerUpdate.getId());
+            
+            if(prepareStatement.executeUpdate() > 0)
+                return read(customerUpdate.getId());
+            else
+                return c;
         }
         catch (SQLException e)
         {

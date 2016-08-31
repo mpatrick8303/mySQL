@@ -14,14 +14,13 @@ public class Customers implements CustomerDAO
 {
 
     private Connection connection;
+    CustomerORM cORM = new CustomerORM() {};
 
     public Customers(DataSource datasource)
     {
-        Connection connection;
         try
         {
-            connection = datasource.getConnection();
-            this.connection = connection;
+            this.connection = datasource.getConnection();
         }
         catch (SQLException e)
         {
@@ -39,13 +38,14 @@ public class Customers implements CustomerDAO
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement("Insert Into customers(first,last) Values(?,?)", Statement.RETURN_GENERATED_KEYS);
+            prepareStatement = this.connection.prepareStatement(cORM.prepareInsert(), Statement.RETURN_GENERATED_KEYS);
             prepareStatement.setString(1, customer.getFirstName());
             prepareStatement.setString(2, customer.getLastName());      
             prepareStatement.executeUpdate();
             ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
             generatedKeys.next();
-            c = read(generatedKeys.getInt(1));
+            c = new Customer(generatedKeys.getInt(1),customer.getFirstName(),customer.getLastName());
+            //c = cORM.map(customer);
             return c;
         }
         catch (SQLException e)
@@ -62,7 +62,7 @@ public class Customers implements CustomerDAO
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement("Delete From customers Where id=?");
+            prepareStatement = this.connection.prepareStatement(cORM.prepareDelete());
             prepareStatement.setInt(1, toDelete.getId());
             return prepareStatement.executeUpdate()>0;
 
@@ -81,13 +81,16 @@ public class Customers implements CustomerDAO
         Customer c = null;
         try
         {
-            prepareStatement = this.connection.prepareStatement("Update customers Set first = ?, last = ? Where id=?");
+            prepareStatement = this.connection.prepareStatement(cORM.prepareUpdate());
             prepareStatement.setString(1, customerUpdate.getFirstName());
             prepareStatement.setString(2, customerUpdate.getLastName());
             prepareStatement.setInt(3, customerUpdate.getId());
             
             if(prepareStatement.executeUpdate() > 0)
-                return read(customerUpdate.getId());
+            {
+                c = cORM.mapCustomer(customerUpdate);
+                return c;
+            }
             else
                 return c;
         }
@@ -111,8 +114,7 @@ public class Customers implements CustomerDAO
 
             if (results.next())
             {
-                c = new Customer(results.getString(2), results.getString(3));
-                c.setId(results.getInt(1));
+                c = cORM.mapResult(results);
 
             }
             return c;
@@ -135,8 +137,7 @@ public class Customers implements CustomerDAO
 
             while (results.next())
             {
-                Customer c = new Customer(results.getString(2), results.getString(3));
-                c.setId(results.getInt(1));
+                Customer c = cORM.mapResult(results);
                 customers.add(c);
             }
             return customers;
@@ -160,8 +161,7 @@ public class Customers implements CustomerDAO
 
             while (results.next())
             {
-                Customer c = new Customer(results.getString(2), results.getString(3));
-                c.setId(results.getInt(1));
+                Customer c = cORM.mapResult(results);
                 customersByFirstName.add(c);
             }
 
@@ -186,8 +186,7 @@ public class Customers implements CustomerDAO
 
             while (results.next())
             {
-                Customer c = new Customer(results.getString(2), results.getString(3));
-                c.setId(results.getInt(1));
+                Customer c = cORM.mapResult(results);
                 customersByLastName.add(c);
             }
 
@@ -206,7 +205,7 @@ public class Customers implements CustomerDAO
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement("Delete From customers");
+            prepareStatement = this.connection.prepareStatement(cORM.prepareDeleteAll());
             return prepareStatement.execute();
         }
         catch (SQLException e)

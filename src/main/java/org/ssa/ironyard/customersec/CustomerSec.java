@@ -1,4 +1,4 @@
-package org.ssa.ironyard.customer;
+package org.ssa.ironyard.customersec;
 
 public class CustomerSec
 {

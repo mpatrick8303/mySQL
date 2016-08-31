@@ -1,6 +1,8 @@
-package org.ssa.ironyard.customer;
+package org.ssa.ironyard.customersec;
 
 import java.sql.SQLException;
+
+import org.ssa.ironyard.customer.Customer;
 
 public interface CustomerSecDAO
 {

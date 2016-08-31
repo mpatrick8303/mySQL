@@ -1,4 +1,4 @@
-package org.ssa.ironyard.customer;
+package org.ssa.ironyard.customersec;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.sql.DataSource;
+
+import org.ssa.ironyard.customer.Customer;
 
 
 
@@ -98,8 +100,7 @@ public class CustomersSec implements CustomerSecDAO
         
         if(results.next())
         {
-             c = new Customer(results.getString(2), results.getString(3));
-             c.setId(results.getInt(1));
+             c = new Customer(results.getInt(1),results.getString(2), results.getString(3));
             
         }
         

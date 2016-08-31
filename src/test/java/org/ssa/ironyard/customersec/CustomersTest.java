@@ -1,4 +1,4 @@
-package org.ssa.ironyard.customer;
+package org.ssa.ironyard.customersec;
 
 import static org.junit.Assert.*;
 
@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ssa.ironyard.customer.Customer;
+import org.ssa.ironyard.customersec.CustomersSec;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 

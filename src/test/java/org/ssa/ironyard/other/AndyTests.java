@@ -13,7 +13,6 @@ import org.ssa.ironyard.accounts.Account;
 import org.ssa.ironyard.accounts.Account.Type;
 import org.ssa.ironyard.accounts.AccountDAO;
 import org.ssa.ironyard.customer.Customer;
-import org.ssa.ironyard.customer.CustomerDAO;
 import org.ssa.ironyard.customer.Customers;
 
 import com.mysql.cj.jdbc.MysqlDataSource;

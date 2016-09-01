@@ -1,6 +1,9 @@
 package org.ssa.ironyard.customer;
 
-public class Customer 
+import org.ssa.ironyard.DomainObject;
+import org.ssa.ironyard.accounts.Account;
+
+public class Customer implements DomainObject
 {
     private int id;
     private String firstName;
@@ -55,6 +58,22 @@ public class Customer
     {
         this.id = id;
     }
+    
+    @Override
+    public Customer clone()
+    {
+        try
+        {
+            Customer copy = (Customer) super.clone();
+            return copy;
+        }
+        catch(CloneNotSupportedException ex)
+        {
+            
+        }
+        return null;
+        
+    }
 
 
     @Override
@@ -63,6 +82,7 @@ public class Customer
         final int prime = 31;
         int result = 1;
         result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+        result = prime * result + id;
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         return result;
     }
@@ -79,21 +99,7 @@ public class Customer
         if (getClass() != obj.getClass())
             return false;
         Customer other = (Customer) obj;
-        if (firstName == null)
-        {
-            if (other.firstName != null)
-                return false;
-        }
-        else if (!firstName.equals(other.firstName))
-            return false;
-        if (lastName == null)
-        {
-            if (other.lastName != null)
-                return false;
-        }
-        else if (!lastName.equals(other.lastName))
-            return false;
-        return true;
+      return this.id == other.id;
     }
     
     

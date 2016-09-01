@@ -3,7 +3,10 @@ package org.ssa.ironyard.customer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public interface CustomerORM
+import org.ssa.ironyard.ORM;
+import org.ssa.ironyard.accounts.Account;
+
+public interface CustomerORM extends ORM<Customer>
 {
     default String projection()
     {
@@ -14,8 +17,11 @@ public interface CustomerORM
     {
         return "customers";
     }
+    
 
-    default Customer mapResult(ResultSet results) throws SQLException
+
+
+    default Customer map(ResultSet results) throws SQLException
     {
         Customer c = new Customer();
         c.setFirstName(results.getString("first"));
@@ -24,15 +30,7 @@ public interface CustomerORM
         return c;
         
     }
-    
-    default Customer mapCustomer(Customer customer)
-    {
-        
-            Customer c = null;
-            c = new Customer(customer.getId(),customer.getFirstName(),customer.getLastName());
-            return c;
-    
-    }
+
     
     default String prepareInsert()
     {

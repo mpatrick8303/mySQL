@@ -10,41 +10,43 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-public class Customers implements CustomerDAO
+import org.ssa.ironyard.AbstractDAO;
+import org.ssa.ironyard.ORM;
+
+public class Customers  extends AbstractDAO<Customer> implements CustomerDAO
 {
 
-    private Connection connection;
-    CustomerORM cORM = new CustomerORM() {};
+    
+  
 
-    public Customers(DataSource datasource)
+    protected Customers(DataSource datasource, ORM<Customer> orm)
     {
-        try
-        {
-            this.connection = datasource.getConnection();
-        }
-        catch (SQLException e)
-        {
-            return;//the catch handles what could go wrong
-            //so in this case normally if the database has an error 
-            //and you have to handle the exception you want to handle and can either throw another exception or handle it how you want
-        }
+        super(datasource, orm);
+        // TODO Auto-generated constructor stub
+    }
+    
+    public Customers(DataSource datasource){
+        this(datasource, new CustomerORM(){});
 
     }
 
     @Override
     public Customer insert(Customer customer)
     {
+        Connection connection = null;
         Customer c = null;
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement(cORM.prepareInsert(), Statement.RETURN_GENERATED_KEYS);
+            connection = datasource.getConnection();
+            prepareStatement = connection.prepareStatement(orm.prepareInsert(), Statement.RETURN_GENERATED_KEYS);
             prepareStatement.setString(1, customer.getFirstName());
             prepareStatement.setString(2, customer.getLastName());      
             prepareStatement.executeUpdate();
             ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
             generatedKeys.next();
             c = new Customer(generatedKeys.getInt(1),customer.getFirstName(),customer.getLastName());
+            close(connection);
             return c;
         }
         catch (SQLException e)
@@ -57,13 +59,16 @@ public class Customers implements CustomerDAO
     @Override
     public boolean delete(Customer toDelete)
     {
-
+        Connection connection;
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement(cORM.prepareDelete());
+            connection = datasource.getConnection();
+            prepareStatement = connection.prepareStatement(orm.prepareDelete());
             prepareStatement.setInt(1, toDelete.getId());
-            return prepareStatement.executeUpdate()>0;
+            boolean delete =  prepareStatement.executeUpdate()>0;
+            close(connection);
+            return delete;
 
         }
         catch (SQLException e)
@@ -75,21 +80,21 @@ public class Customers implements CustomerDAO
 
     public Customer update(Customer customerUpdate)
     {
-
+        Connection connection = null;
         PreparedStatement prepareStatement;
         Customer c = null;
         try
         {
-            prepareStatement = this.connection.prepareStatement(cORM.prepareUpdate());
+            connection = datasource.getConnection();
+            prepareStatement = connection.prepareStatement(orm.prepareUpdate());
             prepareStatement.setString(1, customerUpdate.getFirstName());
             prepareStatement.setString(2, customerUpdate.getLastName());
             prepareStatement.setInt(3, customerUpdate.getId());
             
             if(prepareStatement.executeUpdate() > 0)
             {
-                c = cORM.mapCustomer(customerUpdate);
-                return c;
-            }
+                 close(connection);
+                 return customerUpdate;            }
             else
                 return c;
         }
@@ -103,19 +108,22 @@ public class Customers implements CustomerDAO
     @Override
     public Customer read(int id)
     {
+        Connection connection = null;
         PreparedStatement prepareStatementQ;
         Customer c = null;
         try
         {
-            prepareStatementQ = this.connection.prepareStatement("Select * From customers Where id=?");
+            connection = datasource.getConnection();
+            prepareStatementQ = connection.prepareStatement("Select * From customers Where id=?");
             prepareStatementQ.setInt(1, id);
             ResultSet results = prepareStatementQ.executeQuery();
 
             if (results.next())
             {
-                c = cORM.mapResult(results);
+                c = orm.map(results);
 
             }
+            close(connection);
             return c;
         }
         catch (SQLException e)
@@ -127,18 +135,21 @@ public class Customers implements CustomerDAO
 
     public List<Customer> readAll()
     {
+        Connection connection = null;
         List<Customer> customers = new ArrayList<>();
         PreparedStatement preparedStatement;
         try
         {
-            preparedStatement = this.connection.prepareStatement("Select * From customers");
+            connection = datasource.getConnection();
+            preparedStatement = connection.prepareStatement("Select * From customers");
             ResultSet results = preparedStatement.executeQuery();
 
             while (results.next())
             {
-                Customer c = cORM.mapResult(results);
+                Customer c = orm.map(results);
                 customers.add(c);
             }
+            close(connection);
             return customers;
         }
         catch (SQLException e)
@@ -150,20 +161,22 @@ public class Customers implements CustomerDAO
 
     public List<Customer> readFirstName(String firstName)
     {
+        Connection connection = null;
         List<Customer> customersByFirstName = new ArrayList<>();
         PreparedStatement preparedStatement;
         try
         {
-            preparedStatement = this.connection.prepareStatement("Select * From customers Where first=?");
+            connection = datasource.getConnection();
+            preparedStatement = connection.prepareStatement("Select * From customers Where first=?");
             preparedStatement.setString(1, firstName);
             ResultSet results = preparedStatement.executeQuery();
 
             while (results.next())
             {
-                Customer c = cORM.mapResult(results);
+                Customer c = orm.map(results);
                 customersByFirstName.add(c);
             }
-
+            close(connection);
             return customersByFirstName;
         }
         catch (SQLException e)
@@ -175,20 +188,22 @@ public class Customers implements CustomerDAO
 
     public List<Customer> readLastName(String lastName)
     {
+        Connection connection = null;
         List<Customer> customersByLastName = new ArrayList<>();
         PreparedStatement preparedStatement;
         try
         {
-            preparedStatement = this.connection.prepareStatement("Select * From customers Where last=?");
+            connection = datasource.getConnection();
+            preparedStatement = connection.prepareStatement("Select * From customers Where last=?");
             preparedStatement.setString(1, lastName);
             ResultSet results = preparedStatement.executeQuery();
 
             while (results.next())
             {
-                Customer c = cORM.mapResult(results);
+                Customer c = orm.map(results);
                 customersByLastName.add(c);
             }
-
+            close(connection);
             return customersByLastName;
 
         }
@@ -201,29 +216,42 @@ public class Customers implements CustomerDAO
 
     public boolean deleteAll()
     {
+        Connection connection;
         PreparedStatement prepareStatement;
         try
         {
-            prepareStatement = this.connection.prepareStatement(cORM.prepareDeleteAll());
-            return prepareStatement.execute();
+            connection = datasource.getConnection();
+            prepareStatement = connection.prepareStatement(orm.prepareDeleteAll());
+            boolean deleteAll = prepareStatement.execute();
+            close(connection);
+            return deleteAll;
         }
         catch (SQLException e)
         {
             return false;
         }
+        
 
     }
 
-    public void close()
+    public void close(Connection connection)
     {
+
         try
         {
-            this.connection.close();
+            connection.close();
         }
         catch (SQLException e)
         {
             return;
         }
+    }
+
+    @Override
+    public void close()
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -1,4 +1,4 @@
-package org.ssa.ironyard.accounts;
+package org.ssa.ironyard;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,11 +8,13 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-public abstract class AbstractDAO<T extends DomainObject> 
+import org.ssa.ironyard.ORM;
+import org.ssa.ironyard.accounts.Account;
+
+public abstract class AbstractDAO<T extends DomainObject>
 {
-    final DataSource datasource;
-    final ORM<T> orm;
-    
+    protected final DataSource datasource;
+    protected final ORM<T> orm;
 
     protected AbstractDAO(DataSource datasource, ORM<T> orm)
     {
@@ -21,6 +23,7 @@ public abstract class AbstractDAO<T extends DomainObject>
     }
 
     public abstract T insert(T domain);
+
     public boolean delete(int id)
     {
         PreparedStatement prepareStatement;
@@ -29,7 +32,7 @@ public abstract class AbstractDAO<T extends DomainObject>
             Connection connection = this.datasource.getConnection();
             prepareStatement = connection.prepareStatement(orm.prepareDelete());
             prepareStatement.setInt(1, id);
-            return prepareStatement.executeUpdate()>0;
+            return prepareStatement.executeUpdate() > 0;
 
         }
         catch (SQLException e)
@@ -37,7 +40,11 @@ public abstract class AbstractDAO<T extends DomainObject>
             return false;
         }
     }
+    
+    
+
     public abstract T update(T domain);
+
     public T read(int id)
     {
         try
@@ -47,7 +54,7 @@ public abstract class AbstractDAO<T extends DomainObject>
             read.setInt(1, id);
             ResultSet query = read.executeQuery();
             if (query.next())
-                return this.orm.mapResult(query);
+                return this.orm.map(query);
 
         }
         catch (Exception ex)
@@ -56,18 +63,53 @@ public abstract class AbstractDAO<T extends DomainObject>
         }
         return null;
     }
-    
+
+    public int clear() throws UnsupportedOperationException
+    {
+        Connection conn = null;
+        Statement clear = null;
+        try
+        {
+            conn = this.datasource.getConnection();
+            clear = conn.createStatement();
+            return clear.executeUpdate("DELETE FROM " + this.orm.table() + ";");
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            cleanup(clear, conn);
+        }
+        return 0;
+    }
+
     static protected void cleanup(ResultSet results, Statement statement, Connection connection)
     {
-        if(results != null)
-        {
-            
-        }
-          
+       try
+       {
+           results.close();
+       }
+       catch(SQLException e)
+       {
+           throw new RuntimeException();
+       }
+       cleanup(statement, connection);
+
     }
+
     static protected void cleanup(Statement statement, Connection connection)
     {
-        
+        try
+        {
+            statement.close();
+            connection.close();
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException();
+        }
     }
 
 }

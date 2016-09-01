@@ -33,7 +33,7 @@ public interface AccountORM extends ORM<Account>
     @Override
     default String prepareUpdate()
     {
-        return "Update " + table() + " Set customer = ?, type = ?, balance= ? Where id= ?";
+        return "Update " + table() + " Set customer=?, type=?, balance=? Where id=?";
     }
     @Override
     default String prepareRead()

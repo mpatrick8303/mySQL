@@ -103,5 +103,18 @@ public class Customer implements DomainObject
     }
     
     
+
+    public boolean deeplyEquals(Object obj)//a lot of times want to change this to have if the id = id then they are equal to each other
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Customer other = (Customer) obj;
+      return this.id == other.id && this.firstName.equals(other.firstName) && this.lastName.equals(other.lastName);
+    }
+    
     
 }

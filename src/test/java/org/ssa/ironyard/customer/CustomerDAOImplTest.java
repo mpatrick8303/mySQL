@@ -40,7 +40,7 @@ public class CustomerDAOImplTest
         assertTrue(dbJohn.getLastName().equals(johnDoe.getLastName()));
         assertTrue(dbJohn.getId() > 0);
         
-        assertTrue(dbJohn.equals(customers.read(dbJohn.getId())));
+        assertTrue(dbJohn.deeplyEquals(customers.read(dbJohn.getId())));
 //        Customer check = new Customer(customers.read(dbJohn.getId()).getFirstName(),customers.read(dbJohn.getId()).getLastName());
 //        check.setId(customers.read(dbJohn.getId()).getId());
 //        
@@ -66,7 +66,7 @@ public class CustomerDAOImplTest
         dbJohn = customers.update(dbJohn);
         assertTrue(dbJohn.getFirstName().equals("Jane"));
         assertTrue(customers.read(dbJohn.getId()).getFirstName().equals("Jane"));
-        assertTrue(customers.read(dbJohn.getId()).equals(dbJohn));
+        assertTrue(customers.read(dbJohn.getId()).deeplyEquals(dbJohn));
     }
     
     @Test
@@ -74,7 +74,7 @@ public class CustomerDAOImplTest
     {
         Customer dbJohn = customers.insert(johnDoe);
         
-        assertTrue(dbJohn.equals(customers.read(dbJohn.getId())));
+        assertTrue(dbJohn.deeplyEquals(customers.read(dbJohn.getId())));
         
         customers.delete(dbJohn);
         assertTrue(customers.read(dbJohn.getId()) == null);

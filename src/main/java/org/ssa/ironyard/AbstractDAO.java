@@ -89,7 +89,9 @@ public abstract class AbstractDAO<T extends DomainObject>
     {
        try
        {
-           results.close();
+           if(results != null)
+               results.close();
+           
        }
        catch(SQLException e)
        {
@@ -103,8 +105,22 @@ public abstract class AbstractDAO<T extends DomainObject>
     {
         try
         {
-            statement.close();
+            if(statement != null)
+                statement.close();
             connection.close();
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException();
+        }
+    }
+    
+    static protected void cleanup(Connection connection)
+    {
+        try
+        {
+            if(connection != null)
+                connection.close();
         }
         catch(SQLException e)
         {

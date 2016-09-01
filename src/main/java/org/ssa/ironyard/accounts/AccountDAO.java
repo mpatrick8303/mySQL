@@ -5,17 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.ssa.ironyard.AbstractDAO;
 import org.ssa.ironyard.ORM;
+import org.ssa.ironyard.accounts.Account.Type;
 import org.ssa.ironyard.customer.Customer;
 
 public class AccountDAO extends AbstractDAO<Account>
 {
-    private Connection connection;
 
     protected AccountDAO(DataSource datasource)
     {
@@ -29,8 +30,8 @@ public class AccountDAO extends AbstractDAO<Account>
     public Account insert(Account account)
     {
         Account a = null;
-        Connection connection;
-        PreparedStatement insertStatement;
+        Connection connection = null;
+        PreparedStatement insertStatement = null;
         try
         {
             Account ins = null;
@@ -58,25 +59,29 @@ public class AccountDAO extends AbstractDAO<Account>
         {
             throw new RuntimeException();
         }
+        finally
+        {
+            cleanup(insertStatement, connection);
+        }
     }
 
     @Override
     public Account update(Account account)
     {
-
-        PreparedStatement prepareStatement;
+        Connection connection = null;
+        PreparedStatement updateStatement = null;
         Account a = null;
         try
         {
-            prepareStatement = connection.prepareStatement(orm.prepareUpdate());
-            prepareStatement.setInt(1, account.getCustomer().getId());
-            prepareStatement.setString(2, account.getType().toString());
-            prepareStatement.setBigDecimal(3, account.getBalance());
-            prepareStatement.setInt(4, account.getId());
+            connection = datasource.getConnection();
+            updateStatement = connection.prepareStatement(orm.prepareUpdate());
+            updateStatement.setInt(1, account.getCustomer().getId());
+            updateStatement.setString(2, account.getType().abbrev);
+            updateStatement.setBigDecimal(3, account.getBalance());
+            updateStatement.setInt(4, account.getId());
             
-            if(prepareStatement.executeUpdate() > 0)
+            if(updateStatement.executeUpdate() > 0)
             {
-                
                 return account;
             }
             else
@@ -86,16 +91,104 @@ public class AccountDAO extends AbstractDAO<Account>
         {
             throw new RuntimeException();
         }
+        finally
+        {
+            cleanup(updateStatement,connection);
+        }
     }
 
     public List<Account> readUser(int user)
     {
-        return null;
+        Connection connection = null;
+        List<Account> customerByUser = new ArrayList<>();
+        PreparedStatement readUserStatement = null;
+        ResultSet results = null;
+        try
+        {
+            connection = datasource.getConnection();
+            readUserStatement = connection.prepareStatement("Select * From accounts Where customer=?");
+            readUserStatement.setInt(1, user);
+            results = readUserStatement.executeQuery();
+            
+            while(results.next())
+            {
+                Account a = orm.map(results);
+                customerByUser.add(a);
+            }
+            
+            return customerByUser;  
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException();
+        }
+        finally
+        {
+            cleanup(results, readUserStatement,connection);
+        }
     }
-
+    
+    public List<Account> readType(Type type)
+    {
+        Connection connection = null;
+        List<Account> customerByType = new ArrayList<>();
+        PreparedStatement readTypeStatement = null;
+        ResultSet results = null;
+        try
+        {
+            connection = datasource.getConnection();
+            readTypeStatement = connection.prepareStatement("Select * From accounts Where type=?");
+            readTypeStatement.setString(1, type.abbrev);
+            results = readTypeStatement.executeQuery();
+            
+            while(results.next())
+            {
+                Account a = orm.map(results);
+                customerByType.add(a);
+            }
+            
+            return customerByType;  
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException();
+        }
+        finally
+        {
+            cleanup(results, readTypeStatement,connection);
+        }
+    }
+    
     public List<Account> readUnderwater()
     {
-        return null;
+        Connection connection = null;
+        List<Account> customerUnderwater = new ArrayList<>();
+        PreparedStatement underwaterStatement = null;
+        ResultSet results = null;
+        try
+        {
+            connection = datasource.getConnection();
+            underwaterStatement = connection.prepareStatement("Select * From accounts Where balance<0");
+            results = underwaterStatement.executeQuery();
+            
+            while(results.next())
+            {
+                Account a = orm.map(results);
+                customerUnderwater.add(a);
+            }
+            
+            return customerUnderwater;  
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException();
+        }
+        finally
+        {
+            cleanup(results, underwaterStatement,connection);
+        }
+        
+        
     }
 
 

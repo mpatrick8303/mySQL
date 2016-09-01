@@ -123,9 +123,21 @@ public class Account implements DomainObject
         return result;
     }
     
-    
-    @Override
+    @Override 
     public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Account other = (Account) obj;
+        return this.id == other.id;
+    }
+    
+  
+    public boolean deeplyEquals(Object obj)
     {
         if (this == obj)
             return true;

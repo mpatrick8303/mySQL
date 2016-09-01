@@ -1,4 +1,4 @@
-package org.ssa.ironyard.customer;
+package org.ssa.ironyard;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ssa.ironyard.customer.Customer;
+import org.ssa.ironyard.customer.CustomerDAO;
+import org.ssa.ironyard.customer.Customers;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 

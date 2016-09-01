@@ -26,7 +26,7 @@ public class ConnectTests
     DataSource datasource;
     Connection connection;
     
-    @Before
+    //@Before
     public void setupDB() throws SQLException
     {
         MysqlDataSource mysqlDataSource = new MysqlDataSource();
@@ -37,7 +37,7 @@ public class ConnectTests
         this.connection = connection;
     }
     
-    @Test
+    //@Test
     public void datasource() throws SQLException//connecting to the sql database
     {
         
@@ -51,7 +51,7 @@ public class ConnectTests
         
     }
     
-    @Test
+    //@Test
     public void prepare() throws SQLException
     {
         //prepared statement sends the command to the db server. db server sends back some id that they both know.
@@ -104,7 +104,7 @@ public class ConnectTests
         assertEquals("",1,prepareStatementDelete.executeUpdate());
     }
     
-    @Test
+    //@Test
     public void IUQD() throws SQLException
     {
         PreparedStatement prepareStaementCreate = this.connection.prepareStatement("Insert Into customers(first,last) Values(?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -144,7 +144,7 @@ public class ConnectTests
         
     }
     
-    @After
+    //@After
     public void teardown() throws SQLException
     {
         this.connection.close();

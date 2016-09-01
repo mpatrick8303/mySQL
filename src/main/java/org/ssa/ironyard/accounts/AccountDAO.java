@@ -18,7 +18,7 @@ import org.ssa.ironyard.customer.Customer;
 public class AccountDAO extends AbstractDAO<Account>
 {
 
-    protected AccountDAO(DataSource datasource)
+    public AccountDAO(DataSource datasource)
     {
         super(datasource, new AccountORM()
         {

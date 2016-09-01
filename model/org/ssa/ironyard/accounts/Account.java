@@ -30,6 +30,8 @@ public class Account implements DomainObject
         this.balance = balance;
     }
     
+    public Account(){}
+    
 
 
 
@@ -151,42 +153,7 @@ public class Account implements DomainObject
     
 
     
-//    public boolean deeplyEquals(Object obj)
-//    {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Account other = (Account) obj;
-//        if (balance == null)
-//        {
-//            if (other.balance != null)
-//                return false;
-//        }
-//        else if (!balance.equals(other.balance))
-//            return false;
-//        if (customer == null)
-//        {
-//            if (other.customer != null)
-//                return false;
-//        }
-//        else if (!customer.equals(other.customer))
-//            return false;
-//        if (id == null)
-//        {
-//            if (other.id != null)
-//                return false;
-//        }
-//        else if (!id.equals(other.id))
-//            return false;
-//        if (type != other.type)
-//            return false;
-//        return true;
-//    }
-    
-    
+
     
     
 

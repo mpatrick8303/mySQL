@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ssa.ironyard.customer.Customer;
 import org.ssa.ironyard.customer.CustomerDAO;
-import org.ssa.ironyard.customer.Customers;
+import org.ssa.ironyard.customer.CustomerDAOImpl;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -29,7 +29,7 @@ public class CustomerDAOImplTest
         janeDoe = new Customer("jane", "doe");
         MysqlDataSource mysqlDataSource = new MysqlDataSource();
         mysqlDataSource.setURL(URL);
-        customers = new Customers(mysqlDataSource);
+        customers = new CustomerDAOImpl(mysqlDataSource);
         customers.deleteAll();
         
     }

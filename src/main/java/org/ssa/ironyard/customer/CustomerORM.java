@@ -53,4 +53,47 @@ public interface CustomerORM extends ORM<Customer>
     {
         return "Delete From " + table();
     }
+    
+    default String readUser()
+    {
+        return prepareRead();
+    }
+    default String readType()
+    {
+        return prepareRead();
+    }
+    default String prepareReadLessThan()
+    {
+        return null;
+    }
+    
+    default String eagerRead()
+    {
+        return prepareRead();
+    }
+    
+    default Customer deepMap(ResultSet query) throws SQLException
+    {
+        return map(query);
+    }
+    
+    default String eagerReadUser()
+    {
+        return prepareRead();
+    }
+
+    default String eagerReadType()
+    {
+        return prepareRead();
+    }
+
+    default String eagerPrepareReadLessThan()
+    {
+        return prepareRead();
+    }
+
+  
+    
+
+
 }

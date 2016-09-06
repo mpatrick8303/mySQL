@@ -47,12 +47,18 @@ public abstract class AbstractDAO<T extends DomainObject>
 
     public T read(int id)
     {
+        Connection connection = null;
+        PreparedStatement read = null;
+        ResultSet query = null;
         try
         {
-            Connection connection = this.datasource.getConnection();
-            PreparedStatement read = connection.prepareStatement(this.orm.prepareRead());
+            connection = this.datasource.getConnection();
+            read = connection.prepareStatement(this.orm.prepareRead());
             read.setInt(1, id);
-            ResultSet query = read.executeQuery();
+            query = read.executeQuery();
+            
+            
+            
             if (query.next())
                 return this.orm.map(query);
 
@@ -60,6 +66,37 @@ public abstract class AbstractDAO<T extends DomainObject>
         catch (Exception ex)
         {
 
+        }
+        finally
+        {
+            cleanup(query, read, connection);
+        }
+        return null;
+    }
+    
+    public T eagerRead(int id)
+    {
+        Connection connection = null;
+        PreparedStatement eagerRead = null;
+        ResultSet query = null;
+        try
+        {
+            connection = this.datasource.getConnection();
+            eagerRead = connection.prepareStatement(this.orm.eagerRead());
+            eagerRead.setInt(1, id);
+            query = eagerRead.executeQuery();
+            
+            if (query.next())
+                return this.orm.deepMap(query);
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println("error");
+        }
+        finally
+        {
+            cleanup(query, eagerRead, connection);
         }
         return null;
     }

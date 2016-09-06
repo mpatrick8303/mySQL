@@ -12,7 +12,9 @@ public class Account implements DomainObject
     private Customer customer;
     Integer id;
     BigDecimal balance;
-    
+    boolean isLoaded = false;
+
+
     public Account(int id, Customer customer, Type type, BigDecimal balance)
     {
         this.id = id;
@@ -34,7 +36,6 @@ public class Account implements DomainObject
     
 
 
-
     public Type getType()
     {
         return type;
@@ -48,6 +49,11 @@ public class Account implements DomainObject
     public Customer getCustomer()
     {
         return customer;
+    }
+   
+    public void setLoaded(boolean isLoaded)
+    {
+        this.isLoaded = isLoaded;
     }
 
     public void setCustomer(Customer customer)
@@ -139,18 +145,18 @@ public class Account implements DomainObject
     }
     
   
-    public boolean deeplyEquals(Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Account other = (Account) obj;
-        return this.id == other.id && this.customer.equals(other.customer) && this.type == other.type && this.balance.compareTo(other.balance)==0;
-    }
-    
+//    public boolean deeplyEquals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Account other = (Account) obj;
+//        return this.id == other.id && this.customer.equals(other.customer) && this.type == other.type && this.balance.compareTo(other.balance)==0;
+//    }
+
 
     
 

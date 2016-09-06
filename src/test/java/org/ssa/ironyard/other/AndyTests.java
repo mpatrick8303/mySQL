@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ssa.ironyard.accounts.Account;
 import org.ssa.ironyard.accounts.Account.Type;
-import org.ssa.ironyard.accounts.AccountDAO;
+import org.ssa.ironyard.accounts.AccountDAOImpl;
 import org.ssa.ironyard.customer.Customer;
-import org.ssa.ironyard.customer.Customers;
+import org.ssa.ironyard.customer.CustomerDAOImpl;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -23,8 +23,8 @@ public class AndyTests
         Account negativeSavings;
         static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root" + "&useServerPrepStmts=true";
 
-        AccountDAO accounts;
-        Customers customers;
+        AccountDAOImpl accounts;
+        CustomerDAOImpl customers;
         int custID;
 
         @Before
@@ -32,8 +32,8 @@ public class AndyTests
         {
             MysqlDataSource mysqlDataSource = new MysqlDataSource();
             mysqlDataSource.setURL(URL);
-            accounts = new AccountDAO(mysqlDataSource);
-            customers = new Customers(mysqlDataSource);
+            accounts = new AccountDAOImpl(mysqlDataSource);
+            customers = new CustomerDAOImpl(mysqlDataSource);
             Customer customer = customers.insert(new Customer("john", "doe"));
             positiveChecking = new Account(customer, Type.CHECKING, BigDecimal.valueOf(1000));
             negativeSavings = new Account(customer, Type.SAVINGS, BigDecimal.valueOf(-1000));

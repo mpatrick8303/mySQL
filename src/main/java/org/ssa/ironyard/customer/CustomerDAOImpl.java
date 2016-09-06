@@ -13,22 +13,24 @@ import javax.sql.DataSource;
 import org.ssa.ironyard.AbstractDAO;
 import org.ssa.ironyard.ORM;
 
-public class Customers  extends AbstractDAO<Customer> implements CustomerDAO
+public class CustomerDAOImpl  extends AbstractDAO<Customer> implements CustomerDAO
 {
 
     
   
 
-    protected Customers(DataSource datasource, ORM<Customer> orm)
+    protected CustomerDAOImpl(DataSource datasource, ORM<Customer> orm)
     {
         super(datasource, orm);
         // TODO Auto-generated constructor stub
     }
     
-    public Customers(DataSource datasource){
+    public CustomerDAOImpl(DataSource datasource){
         this(datasource, new CustomerORM(){});
 
     }
+    
+
 
     @Override
     public Customer insert(Customer customer)

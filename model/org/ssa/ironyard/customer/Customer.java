@@ -8,6 +8,7 @@ public class Customer implements DomainObject
     private int id;
     private String firstName;
     private String lastName;
+    private boolean isLoaded = false;
     
     public Customer(int id, String fN, String lN)
     {
@@ -27,7 +28,7 @@ public class Customer implements DomainObject
         // TODO Auto-generated constructor stub
     }
 
-    public int getId()
+    public Integer getId()
     {
         return id;
     }
@@ -59,6 +60,13 @@ public class Customer implements DomainObject
         this.id = id;
     }
     
+    
+    
+    public void setLoaded(boolean isLoaded)
+    {
+        this.isLoaded = isLoaded;
+    }
+
     @Override
     public Customer clone()
     {
@@ -104,17 +112,17 @@ public class Customer implements DomainObject
     
     
 
-    public boolean deeplyEquals(Object obj)//a lot of times want to change this to have if the id = id then they are equal to each other
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Customer other = (Customer) obj;
-      return this.id == other.id && this.firstName.equals(other.firstName) && this.lastName.equals(other.lastName);
-    }
+//    public boolean deeplyEquals(Object obj)//a lot of times want to change this to have if the id = id then they are equal to each other
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Customer other = (Customer) obj;
+//      return this.id == other.id && this.firstName.equals(other.firstName) && this.lastName.equals(other.lastName);
+//    }
     
     
 }

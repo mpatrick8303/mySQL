@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.ssa.ironyard.accounts.Account;
 import org.ssa.ironyard.accounts.AccountDAOImpl;
 import org.ssa.ironyard.accounts.Account.Type;
-import org.ssa.ironyard.bank.BankServicesImpl;
+import org.ssa.ironyard.bank.BankTransactionServicesImpl;
 import org.ssa.ironyard.customer.Customer;
 import org.ssa.ironyard.customer.CustomerDAO;
 import org.ssa.ironyard.customer.CustomerDAOImpl;
@@ -17,7 +17,7 @@ import org.ssa.ironyard.customer.CustomerDAOImpl;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 
-public class BankServicesImplTest
+public class BankTransactionServicesImplTest
 {
 
     Customer mikePatrick;
@@ -35,7 +35,7 @@ public class BankServicesImplTest
     AccountDAOImpl accounts;
     CustomerDAO cus;
 
-    BankServicesImpl bankS = new BankServicesImpl();
+    BankTransactionServicesImpl bankS = new BankTransactionServicesImpl();
     
     static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root&" + "useServerPrepStmts=true";
     
@@ -106,7 +106,7 @@ public class BankServicesImplTest
         assertTrue(b.getBalance().add(amount).equals(tR.getBalance()));
     }
     
-    @Test
+    //@Test
     public void testDeleteAll()
     {
         bankS.deleteAll();

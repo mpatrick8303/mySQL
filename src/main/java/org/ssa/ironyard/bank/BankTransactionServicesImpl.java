@@ -8,13 +8,13 @@ import org.ssa.ironyard.customer.CustomerDAOImpl;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
-public class BankServicesImpl implements BankServices
+public class BankTransactionServicesImpl implements BankTransactionServices
 {
     static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root&" + "useServerPrepStmts=true";
     AccountDAOImpl accounts;
     CustomerDAOImpl customers;
     
-    public BankServicesImpl()
+    public BankTransactionServicesImpl()
     {
         
         MysqlDataSource mysqlDataSource = new MysqlDataSource();
@@ -23,11 +23,14 @@ public class BankServicesImpl implements BankServices
         customers = new CustomerDAOImpl(mysqlDataSource);
         
     }
-
+ 
     @Override
     public Account Withdrawl(int account, BigDecimal amount)
     {
         Account a = accounts.read(account);
+        
+        if(a == null)
+            return new Account();
         
         BigDecimal wBalance = a.getBalance().add(amount);
         
@@ -40,6 +43,9 @@ public class BankServicesImpl implements BankServices
     {
         Account a = accounts.read(account);
         
+        if(a == null)
+            return new Account();
+        
         BigDecimal wBalance = a.getBalance().subtract(amount);
         
         Account wA = new Account(a.getId(),a.getCustomer(),a.getType(),wBalance);
@@ -51,6 +57,9 @@ public class BankServicesImpl implements BankServices
     {
         Account a = accounts.read(accountOne);
         Account b = accounts.read(accountTwo);
+        
+        if(a == null || b == null)
+            return new Account();
         
         BigDecimal aBalance = a.getBalance().subtract(amount);
         BigDecimal bBalance = b.getBalance().add(amount);
